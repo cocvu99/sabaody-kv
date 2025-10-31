@@ -15,7 +15,7 @@ func handleConnection(conn net.Conn) {
 		log.Fatal(err)
 	}
 	// process
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 7)
 	// reply
 	conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\nHello, world\r\n"))
 	conn.Close()
