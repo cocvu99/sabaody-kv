@@ -27,7 +27,7 @@ jobs:
       run: go build -v ./tcp-server/main.go
 
     - name: Build thread-pool
-      run: go build -v ./thread-pool/main.go
+      run: go build -v ./threadpool/main.go
 
     - name: Run go vet
       run: go vet ./tcp-server
