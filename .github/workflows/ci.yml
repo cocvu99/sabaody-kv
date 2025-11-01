@@ -22,7 +22,32 @@ jobs:
 
     - name: Verify Go installation version
       run: go version
-    
+
+    - name: Build tcp-server
+      run: go build -v ./tcp-server/main.go
+
+    - name: Build thread-pool
+      run: go build -v ./thread-pool/main.go
+
+    - name: Run go vet
+      run: go vet ./tcp-server
+  
+  Check-code-formatting:
+    name: Check golang code formatting
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Verify Go installation version
+      run: go version
+
     - name: Check code formatting
       run: |
         if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
@@ -30,12 +55,6 @@ jobs:
           gofmt -s -l .
           exit 1
         fi
-
-    - name: Build
-      run: go build -v ./tcp-server/main.go
-
-    - name: Run go vet
-      run: go vet ./tcp-server
     
     # - name: Download Go dependencies
     #   run: go mod download
