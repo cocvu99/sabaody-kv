@@ -25,7 +25,7 @@ jobs:
     
     - name: Check code formatting
       run: |
-        if [ "$(gofmt -s -l . | wc -l)" -gt 0]; then
+        if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
           echo "Code is not formatted. Run: gofmt -s -w ."
           gofmt -s -l .
           exit 1
