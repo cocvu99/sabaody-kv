@@ -13,29 +13,29 @@ type Job struct {
 
 // represent the thread in the pool
 type Worker struct {
-	id int
+	id      int
 	jobChan chan Job
 }
 
 // represent the thread pool
-type Pool struct{
+type Pool struct {
 	jobQueue chan Job
-	workers []*Worker
+	workers  []*Worker
 }
 
 // create a new worker
 func NewWorker(id int, jobChan chan Job) *Worker {
 	return &Worker{
-		id: id,
+		id:      id,
 		jobChan: jobChan,
 	}
 }
 
 func (w *Worker) Start() {
-	go func ()  {
+	go func() {
 		for job := range w.jobChan {
-			log.Printf("Worker %d is handling job from %s", w.id, 
-			job.conn.RemoteAddr())
+			log.Printf("Worker %d is handling job from %s", w.id,
+				job.conn.RemoteAddr())
 			handleConnection(job.conn)
 		}
 	}()
@@ -44,14 +44,14 @@ func (w *Worker) Start() {
 func NewPool(numOfWorker int) *Pool {
 	return &Pool{
 		jobQueue: make(chan Job),
-		workers: make([]*Worker, numOfWorker),
+		workers:  make([]*Worker, numOfWorker),
 	}
 }
 
 // push job to queue
 func (p *Pool) AddJob(conn net.Conn) {
 	p.jobQueue <- Job{conn: conn}
-	
+
 }
 
 func (p *Pool) Start() {
@@ -62,7 +62,7 @@ func (p *Pool) Start() {
 	}
 }
 
-func handleConnection(conn net.Conn)  {
+func handleConnection(conn net.Conn) {
 	defer conn.Close()
 	buf := make([]byte, 1000)
 	conn.Read(buf)
@@ -70,7 +70,7 @@ func handleConnection(conn net.Conn)  {
 	conn.Write([]byte("HTTP/1.1 200 OK \r\n\r Going to threadpool \r\n"))
 }
 
-func main()  {
+func main() {
 	listener, err := net.Listen("tcp", ":3000")
 	if err != nil {
 		log.Fatal(err)
