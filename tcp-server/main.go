@@ -18,19 +18,20 @@ func handleConnection(conn net.Conn) {
 		log.Fatal(err)
 	}
 
+	defer conn.Close()
 	// Create reader to read line-by-line
 	reader := bufio.NewReader(conn)
 
 	/*
-	Create a loop: 
-		- Re-use and maintain the connection between client and server
-		- Pass data from buffer (read) client and send to the server
-		- Handle all exception error cases: client closing connection, ... TODO 
-		- TODO: Check all exception error case and handle them
+		Create a loop:
+			- Re-use and maintain the connection between client and server
+			- Pass data from buffer (read) client and send to the server
+			- Handle all exception error cases: client closing connection, ... TODO
+			- TODO: Check all exception error case and handle them
 	*/
 	for {
 		conn.SetReadDeadline(time.Now().Add(15 * time.Second))
-		
+
 		message, err := reader.ReadString('\n')
 
 		// Handle all exception error cases
@@ -49,7 +50,7 @@ func handleConnection(conn net.Conn) {
 
 		// Create response message and its format
 		response := fmt.Sprintf("Echo: %s (at %s)\n",
-			message, 
+			message,
 			time.Now().Format("15:04:05"))
 
 		_, err = conn.Write([]byte(response))
@@ -59,10 +60,6 @@ func handleConnection(conn net.Conn) {
 		}
 
 	}
-	// reply
-	conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\nHello, world\r\n"))
-
-	conn.Close()
 }
 
 func main() {
