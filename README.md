@@ -16,3 +16,7 @@ Start Server:
 # Terminal 2
 Using telnet
 ```telnet localhost 3000```
+
+
+using monitor script
+```pip install psutil```
