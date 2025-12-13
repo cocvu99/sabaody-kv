@@ -3,7 +3,7 @@ Cache data is like bubbles - temporary, subject to bursting (deleting), but very
 
 
 ## Core Features ✨
-- [ ] **Implement a TCP Server that a client can send multiple requests to server**: Build a TCP server can handle requests from different clients 
+- [x] **Implement a TCP Server that a client can send multiple requests to server**: Build a TCP server can handle requests from different clients 
 
 - [ ] **Implement Thread Pool server**: Manage a pool of worker threads to reuse resources and control the number of parallel processing tasks.
 
