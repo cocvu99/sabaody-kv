@@ -1,9 +1,9 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net"
-	"time"
 )
 
 // Job: element in the queue - having the connection
@@ -79,14 +79,47 @@ func (p *Pool) AddJob(conn net.Conn) {
 	p.jobQueue <- Job{conn: conn}
 }
 
+func readCommand(c net.Conn) (string, error) {
+	var buf []byte = make([]byte, 512)
+	n, err := c.Read(buf[:])
+	if err != nil {
+		return "", err
+	}
+	return string(buf[:n]), nil
+}
+
+func respond(cmd string, c net.Conn) error {
+	if _, err := c.Write([]byte(cmd)); err != nil {
+		return err
+	}
+	return nil
+}
+
 func handleConnection(conn net.Conn) {
-	defer conn.Close()
-	buf := make([]byte, 1000)
+	/*
+		defer conn.Close()
+		buf := make([]byte, 1000)
 
-	conn.Read(buf)
-	time.Sleep(5 * time.Second)
+		conn.Read(buf)
+		time.Sleep(5 * time.Second)
 
-	conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n Phase 2 Thread-pool\r\n"))
+		conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n Phase 2 Thread-pool\r\n"))
+	*/
+	log.Println("Handle conn from", conn.RemoteAddr())
+	for {
+		cmd, err := readCommand(conn)
+		if err != nil {
+			conn.Close()
+			log.Println("client disconnected", conn.RemoteAddr())
+			if err == io.EOF {
+				break
+			}
+		}
+
+		if err = respond(cmd, conn); err != nil {
+			log.Println("err write:", err)
+		}
+	}
 }
 
 func main() {
