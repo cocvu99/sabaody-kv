@@ -6,54 +6,67 @@ import (
 	"time"
 )
 
-// element in the queue
+// Job: element in the queue - having the connection
 type Job struct {
 	conn net.Conn
 }
 
-// represent the thread in the pool
+// Worker meaning thread in the pool
 type Worker struct {
-	id      int
-	jobChan chan Job
+	id       int
+	jobQueue chan Job
 }
 
-// represent the thread pool
+// Queue and array of Worker
 type Pool struct {
 	jobQueue chan Job
 	workers  []*Worker
 }
 
-// create a new worker
-func NewWorker(id int, jobChan chan Job) *Worker {
-	return &Worker{
-		id:      id,
-		jobChan: jobChan,
+/*
+NewPool function: Create a new Pool
+n int: Pass in the number of threads want to create in the pool
+create a new queue
+create a new array: number of threads
+*/
+func NewPool(n int) *Pool {
+	return &Pool{
+		jobQueue: make(chan Job),
+		workers:  make([]*Worker, n),
 	}
 }
 
+/*
+NewWorker function: Creating a new Worker
+*/
+func NewWorker(id int, jobQueue chan Job) *Worker {
+	return &Worker{
+		id:       id,
+		jobQueue: jobQueue,
+	}
+}
+
+/*
+Start-Worker function:
+go func() -> Create new goroutine/thread
+for loop: to get the connection -> call the handleconnection
+*/
 func (w *Worker) Start() {
 	go func() {
-		for job := range w.jobChan {
-			log.Printf("Worker %d is handling job from %s", w.id,
+		// chanel is thread-safe and blocking
+		for job := range w.jobQueue {
+			log.Printf("Worker %d is processing from %s",
+				w.id,
 				job.conn.RemoteAddr())
+
 			handleConnection(job.conn)
 		}
 	}()
 }
 
-func NewPool(numOfWorker int) *Pool {
-	return &Pool{
-		jobQueue: make(chan Job),
-		workers:  make([]*Worker, numOfWorker),
-	}
-}
-
-// push job to queue
-func (p *Pool) AddJob(conn net.Conn) {
-	p.jobQueue <- Job{conn: conn}
-
-}
-
+/*
+Start-Pool function
+*/
 func (p *Pool) Start() {
 	for i := 0; i < len(p.workers); i++ {
 		worker := NewWorker(i, p.jobQueue)
@@ -62,12 +75,18 @@ func (p *Pool) Start() {
 	}
 }
 
+func (p *Pool) AddJob(conn net.Conn) {
+	p.jobQueue <- Job{conn: conn}
+}
+
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 	buf := make([]byte, 1000)
+
 	conn.Read(buf)
-	time.Sleep(1 * time.Second)
-	conn.Write([]byte("HTTP/1.1 200 OK \r\n\r Going to threadpool \r\n"))
+	time.Sleep(5 * time.Second)
+
+	conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n Phase 2 Thread-pool\r\n"))
 }
 
 func main() {
@@ -75,13 +94,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("TCP-server is started. Listening at port 3000")
 
 	defer listener.Close()
 
-	// 1 pool with 2 threads
 	pool := NewPool(2)
 	pool.Start()
-
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -91,4 +109,5 @@ func main() {
 		// go handleConnection(conn)
 		pool.AddJob(conn)
 	}
+
 }

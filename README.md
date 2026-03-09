@@ -8,6 +8,21 @@ This project is a deep dive into database internals, networking, and high-concur
 
 ---
 
+## Getting Started
+
+### Prerequisites
+* Go 1.24+
+* Linux/macOS (for advanced syscall features)
+
+### Running the Server
+```bash
+# Clone the repository
+git clone https://github.com/cocvu99/sabaody-kv
+
+# Start the TCP server
+go run thread-pool/main.go
+```
+
 ## Roadmap & Core Features
 
 ### 1. Networking & Concurrency
@@ -34,17 +49,8 @@ This project is a deep dive into database internals, networking, and high-concur
 - [ ] **Monitoring**: Real-time statistics via the `INFO` command.
 
 ---
-
-## Getting Started
-
-### Prerequisites
-* Go 1.24+
-* Linux/macOS (for advanced syscall features)
-
-### Running the Server
-```bash
-# Clone the repository
-git clone [https://github.com/cocvu99/sabaody-kv](https://github.com/cocvu99/sabaody-kv)
-
-# Start the TCP server
-go run tcp-server/main.go
+### Todo 2026-Mar-10: 
+- [ ] Re-use and maintain the connection between client and server
+- [ ] Pass data from buffer (read) client and send to the server
+- [ ] Handle all exception error cases: client closing connection, ... TODO
+- [ ] TODO: Check all exception error case and handle them
