@@ -49,9 +49,10 @@ func handleConnection(conn net.Conn) {
 		time.Sleep(500 * time.Millisecond)
 
 		// Create response message and its format
-		response := fmt.Sprintf("Echo: %s (at %s)\n",
+		body := fmt.Sprintf("Echo: %s (at %s)\n",
 			message,
 			time.Now().Format("15:04:05"))
+		response := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n%s", body)
 
 		_, err = conn.Write([]byte(response))
 		if err != nil {
@@ -75,6 +76,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Println("handle conn from", conn.RemoteAddr())
 		// create a new goroutine to handle the connection
 		go handleConnection(conn)
 	}
