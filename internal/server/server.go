@@ -23,6 +23,12 @@ func CreateListenerFD(port int) (int, error) {
 			fmt.Errorf("Error when creating socket: %v", err)
 	}
 
+	// Make the socket non-blocking immediately
+	if err := syscall.SetNonblock(fd, true); err != nil {
+		syscall.Close(fd)
+		return -1, fmt.Errorf("Error when setting non-blocking: %v", err)
+	}
+
 	/*
 		2. Define Address and Port for binding
 		- The SockaddrInet4 reprents IPv4 addresses
@@ -48,5 +54,5 @@ func CreateListenerFD(port int) (int, error) {
 	}
 
 	log.Printf("Listener FD %d is ready to listen on port %d", fd, port)
-	return fd, nil
+	return int(fd), nil
 }
