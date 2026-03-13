@@ -64,3 +64,35 @@ func (e *Epoll) Monitor(fd int) error {
 
 	return nil
 }
+
+/*
+Starting Event Loop
+Wait() function: Blocks until at least one event happend.
+Return a slice of OS-independent Events
+*/
+
+func (e *Epoll) Wait() ([]Event, error) {
+	// 1. Wait for events using syscall.EpollWait
+	// e.epollEvents = "notebook" to record incoming event
+	// -1 mean waiting indefinitely (no timeout)
+	nEvents, err := syscall.EpollWait(e.fd, e.epollEvents, -1)
+	if err != nil {
+		return nil, fmt.Errorf("Error waiting for epoll events: %v", err)
+	}
+
+	// 2. Translate OS-specific events to generic Event
+	var events []Event
+	for i := 0; i < nEvents; i++ {
+		fd := int(e.epollEvents[i].Fd)
+
+		// events = append(events, Event{
+		// 	Fd: int(fd)
+		// })
+
+		// Optimize -> Zero-Allocation
+		// Re-use -> e.genericEvents
+
+		events = e.genericEvents
+	}
+	return events, nil
+}
