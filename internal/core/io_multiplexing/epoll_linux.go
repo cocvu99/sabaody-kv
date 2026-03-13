@@ -81,7 +81,7 @@ func (e *Epoll) Wait() ([]Event, error) {
 	}
 
 	// 2. Translate OS-specific events to generic Event
-	var events []Event
+	// var events []Event
 	for i := 0; i < nEvents; i++ {
 		fd := int(e.epollEvents[i].Fd)
 
