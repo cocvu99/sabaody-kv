@@ -92,7 +92,8 @@ func (e *Epoll) Wait() ([]Event, error) {
 		// Optimize -> Zero-Allocation
 		// Re-use -> e.genericEvents
 
-		events = e.genericEvents
+		e.genericEvents[i].Fd = fd
 	}
-	return events, nil
+	// Only return the number of the events that just happend (from 0 to nEvents)
+	return e.genericEvents[:nEvents], nil
 }
