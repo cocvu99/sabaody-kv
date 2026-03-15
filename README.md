@@ -28,7 +28,7 @@ go run thread-pool/main.go
 ### 1. Networking & Concurrency
 - [x] **Persistent TCP Server**: Handles multiple requests over a single connection to minimize handshake overhead.
 - [x] **Worker Pool**: Efficiently manages Goroutines to reuse system resources and limit parallel tasks.
-- [ ] **I/O Multiplexing**: High-performance, non-blocking TCP server capable of handling thousands of concurrent connections (Epoll/Kqueue).
+- [x] **I/O Multiplexing**: High-performance, non-blocking TCP server capable of handling thousands of concurrent connections (Epoll/Kqueue).
 - [ ] **Shared-nothing Architecture**: Designed to minimize lock contention and boost horizontal scalability.
 
 ### 2. Protocol & Commands
