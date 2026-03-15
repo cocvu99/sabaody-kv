@@ -1,9 +1,13 @@
+//go:build linux
+
 package server
 
 import (
 	"fmt"
 	"log"
 	"syscall"
+
+	iomultiplexing "github.com/cocvu99/sabaody-kv/internal/core/io_multiplexing"
 )
 
 /*
@@ -55,4 +59,61 @@ func CreateListenerFD(port int) (int, error) {
 
 	log.Printf("Listener FD %d is ready to listen on port %d", fd, port)
 	return int(fd), nil
+}
+
+func Start(port int) {
+	// 1. Create ListenerFD
+	listenerFD, err := CreateListenerFD(port)
+	if err != nil {
+		log.Fatalf("Failed to create listener: %v", err)
+	}
+
+	// 2. Create a epoll - gate-keeper
+	epoll, err := iomultiplexing.NewEpoll()
+	if err != nil {
+		log.Fatalf("Failed to create epoll: %v", err)
+	}
+
+	// 3. Task: Epoll monitor ListenerFD (gate)
+	if err := epoll.Monitor(listenerFD); err != nil {
+		log.Fatalf("Failed to monitor listener: %v", err)
+	}
+
+	log.Println("Event Loop is starting...")
+
+	// 4. Main Event Loop
+	for {
+		events, err := epoll.Wait()
+		if err != nil {
+			log.Printf("Epoll wait error: %v", err)
+			continue
+		}
+
+		for _, events := range events {
+			if events.Fd == listenerFD {
+				// Case 1. New client (visitor)
+				// The Accept() function return nfd (new FD client) and the client's address
+				nfd, _, err := syscall.Accept(listenerFD)
+				if err != nil {
+					log.Printf("Accept() function error: %v", err)
+					continue
+				}
+
+				log.Printf("New client connected with FD: %v", nfd)
+
+				// TODO: Process and Improve logic
+				// Make the socket non-blocking immediately
+				if err := syscall.SetNonblock(nfd, true); err != nil {
+					syscall.Close(nfd)
+					log.Printf("Error when setting non-blocking with client: %v", err)
+					continue
+				}
+
+				epoll.Monitor(nfd)
+
+			} else {
+				log.Printf("Data received on FD: %d", events.Fd)
+			}
+		}
+	}
 }
