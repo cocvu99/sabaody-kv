@@ -1,12 +1,39 @@
-# Sabaody-KV 🫧
+<br />
+<div align="center">
+  <h3 align="center">Sabaody-KV</h3>
+  <p align="center">
+    A minimalist, high-performance in-memory key-value cache built from scratch in Go.
+    <br />
+    <a href="#architecture"><strong>Explore the docs »</strong></a>
+  </p>
+</div>
 
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#about-the-project">About The Project</a></li>
+    <li><a href="#architecture--design">Architecture & Design</a></li>
+    <li><a href="#benchmarks--load-testing">Benchmarks & Load Testing</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#roadmap--future-features">Roadmap & Future Features</a></li>
+    <li><a href="#current-problems">Current Problems</a></li>
+  </ol>
+</details>
+
+## About The Project
 > "What I cannot create, I do not understand." – Richard Feynman
 
-**Sabaody-KV** is a minimalist in-memory key-value cache built from scratch in Go. Much like the bubbles of Sabaody, the data is temporary and fleeting, but the underlying system is fundamental and robust. 
+**Sabaody-KV** is a minimalist in-memory key-value cache built from scratch in Go. This project is a deep dive into OS  internals, networking, and high-concurrency systems.
 
-This project is a deep dive into database internals, networking, and high-concurrency systems.
+## Architecture & Design
 
----
+<div align="center">
+<img src="docs/image/[20260316] Sabaody-kv Architecture Diagram.jpg" alt="Architecture Diagram" width="800">
+
+</div>
+
+## Benchmarks & Load Testing
+(TODO: Đưa số liệu TPS/RPS, P99 Latency và ảnh chụp màn hình Grafana).
 
 ## Getting Started
 
@@ -19,16 +46,11 @@ This project is a deep dive into database internals, networking, and high-concur
 # Clone the repository
 git clone https://github.com/cocvu99/sabaody-kv
 
-# Start the TCP server
+# Start the TCP server (Using Thread-pool method)
 go run thread-pool/main.go
 ```
 
-## Roadmap & Core Features
-
-### 1. Networking & Concurrency
-- [x] **Persistent TCP Server**: Handles multiple requests over a single connection to minimize handshake overhead.
-- [x] **Worker Pool**: Efficiently manages Goroutines to reuse system resources and limit parallel tasks.
-- [x] **I/O Multiplexing**: High-performance, non-blocking TCP server capable of handling thousands of concurrent connections (Epoll/Kqueue).
+## Roadmap & Future Features
 - [ ] **Shared-nothing Architecture**: Designed to minimize lock contention and boost horizontal scalability.
 
 ### 2. Protocol & Commands
@@ -48,9 +70,5 @@ go run thread-pool/main.go
 - [ ] **Graceful Shutdown**: Ensures zero data loss and safe connection termination during exit.
 - [ ] **Monitoring**: Real-time statistics via the `INFO` command.
 
----
-### Todo 2026-Mar-10: 
-- [ ] Re-use and maintain the connection between client and server
-- [ ] Pass data from buffer (read) client and send to the server
-- [ ] Handle all exception error cases: client closing connection, ... TODO
-- [ ] TODO: Check all exception error case and handle them
+## Current Problems
+(Vấn đề hiện tại: Bài toán xử lý TCP connection đứt gãy đột ngột, tối ưu hóa memory khi lượng key lớn).
