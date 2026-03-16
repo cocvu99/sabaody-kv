@@ -28,7 +28,7 @@
 ## Architecture & Design
 
 <div align="center">
-<img src="docs/image/[20260316]_Sabaody-kv_Architecture_Diagram.jpg" alt="Architecture Diagram" width="800">
+<img src="https://raw.githubusercontent.com/cocvu99/sabaody-kv/refs/heads/main/docs/image/%5B20260316%5D%20Sabaody-kv%20Architecture%20Diagram.jpg" alt="Architecture Diagram" width="800">
 
 </div>
 
