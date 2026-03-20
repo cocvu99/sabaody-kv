@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from locust import User, task, between, events
 
-# 1. Load IP từ file .env (Bảo mật tuyệt đối)
+# Load env Target IP to secure EC2_IP
 load_dotenv()
 TARGET_IP = os.getenv("EC2_IP", "127.0.0.1")
 
