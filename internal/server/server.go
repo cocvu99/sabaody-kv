@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"syscall"
+	"time"
 
 	iomultiplexing "github.com/cocvu99/sabaody-kv/internal/core/io_multiplexing"
 )
@@ -112,6 +113,7 @@ func Start(port int) {
 				epoll.Monitor(nfd)
 
 			} else {
+				time.Sleep(2 * time.Second)
 				log.Printf("Data received on FD: %d", events.Fd)
 			}
 		}
