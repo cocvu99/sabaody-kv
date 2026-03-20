@@ -44,6 +44,19 @@ To validate the efficiency of the non-blocking I/O multiplexing architecture, a 
 **Results:**
 The server successfully accepted and maintained 10,000 concurrent connections without exhausting system resources or crashing, proving the scalability of the Epoll-based event loop implementation.
 
+**Test Results (Summary):**
+The server successfully accepted and maintained all connections without exhausting system resources or crashing. Zero failures were recorded during the stress test.
+
+| Metric | Value |
+| :--- | :--- |
+| **Total Requests** | 13,200 |
+| **Failures** | 0 (0%) |
+| **Total RPS** | ~69.75 |
+| **Min Response Time** | 88 ms |
+| **Median Response Time** | 4,700 ms |
+| **95%ile Response Time** | 7,500 ms |
+| **Max Response Time** | 7,894 ms |
+
 <div align="center">
   <img src="docs/image/2026-03-21_02-27.png" width="48%" alt="Locust Test Graph - Concurrent Users">
   <img src="docs/image/2026-03-21_02-33.png" width="48%" alt="Locust Test Graph - Response Time/RPS">
