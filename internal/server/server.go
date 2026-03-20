@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"syscall"
-	"time"
 
 	iomultiplexing "github.com/cocvu99/sabaody-kv/internal/core/io_multiplexing"
 )
@@ -113,8 +112,32 @@ func Start(port int) {
 				epoll.Monitor(nfd)
 
 			} else {
-				time.Sleep(2 * time.Second)
-				log.Printf("Data received on FD: %d", events.Fd)
+				// time.Sleep(2 * time.Second)
+				// log.Printf("Data received on FD: %d", events.Fd)
+
+				// 1. Declear buff and Read data from OS Kernel
+				buf := make([]byte, 1024)
+				n, err := syscall.Read(events.Fd, buf)
+
+				if err != nil {
+					syscall.Close(events.Fd)
+					continue
+				}
+
+				// 2. Case 1: The client actively disconnects (n==0)
+				// Close immediately to avoid Resource Leak
+				if n == 0 {
+					log.Printf("Client disconnect on FD: %d", events.Fd)
+					syscall.Close(events.Fd)
+					continue
+				}
+
+				// 3. Case 2 (Echo): Send back the data that read from step 1
+				_, err = syscall.Write(events.Fd, buf[:n])
+				if err != nil {
+					log.Printf("Error when writing on FD %d: %v", events.Fd, err)
+					syscall.Close(events.Fd)
+				}
 			}
 		}
 	}
