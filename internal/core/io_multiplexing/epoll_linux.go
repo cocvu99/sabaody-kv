@@ -37,7 +37,7 @@ Return a pointer to the Epoll struct
 */
 func NewEpoll() (*Epoll, error) {
 	// 1. Create epoll instance
-	epollFD, err := syscall.EpollCreate(0)
+	epollFD, err := syscall.EpollCreate1(0)
 	if err != nil {
 		return nil, fmt.Errorf("Error when creating epoll: %v", err)
 	}
