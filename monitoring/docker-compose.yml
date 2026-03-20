@@ -10,8 +10,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command: 
       - '--config.file=/etc/prometheus/prometheus.yml'
-    network_mode: 
-      - "host"
+    network_mode: "host"
 
   grafana:
     image: grafana/grafana:latest
@@ -19,13 +18,12 @@ services:
     ports:
     # Avoid duplicated port using of App port 3000
       - "3001:3000"
-    network_mode:
-      - "host"
+    network_mode: "host"
+
     
   node_exporter:
     image: prom/node_exporter:latest
     container_name: node_exporter
     ports:
       - "9100:9100"
-    network_mode:
-      - "host"
+    network_mode: "host"
