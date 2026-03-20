@@ -32,8 +32,22 @@
 
 </div>
 
-## Benchmarks & Load Testing
-(TODO: Đưa số liệu TPS/RPS, P99 Latency và ảnh chụp màn hình Grafana).
+## Performance Benchmarks & Load Testing
+
+To validate the efficiency of the non-blocking I/O multiplexing architecture, a load test was conducted using **Locust**. The system demonstrated stable performance under high concurrency.
+
+**Test Environment & Parameters:**
+* **Infrastructure:** Single AWS EC2 `t3.small` instance (2 vCPU, 2GB RAM).
+* **Target Load:** 10,000 concurrent TCP connections.
+* **Ramp-up Rate:** 500 connections/second.
+
+**Results:**
+The server successfully accepted and maintained 10,000 concurrent connections without exhausting system resources or crashing, proving the scalability of the Epoll-based event loop implementation.
+
+<div align="center">
+  <img src="docs/image/2026-03-21_02-27.png" width="48%" alt="Locust Test Graph - Concurrent Users">
+  <img src="docs/image/2026-03-21_02-33.png" width="48%" alt="Locust Test Graph - Response Time/RPS">
+</div>
 
 ## Getting Started
 
@@ -48,6 +62,9 @@ git clone https://github.com/cocvu99/sabaody-kv
 
 # Start the TCP server (Using Thread-pool method)
 go run thread-pool/main.go
+
+# Start the TCP server (Using I/O Multiplexing method)
+go run cmd/main.go
 ```
 
 ## Roadmap & Future Features
@@ -76,4 +93,6 @@ go run thread-pool/main.go
 - [ ] **Monitoring**: Real-time statistics via the `INFO` command.
 
 ## Current Problems
-(Vấn đề hiện tại: Bài toán xử lý TCP connection đứt gãy đột ngột, tối ưu hóa memory khi lượng key lớn).
+VN: Vấn đề hiện tại: Bài toán xử lý TCP connection đứt gãy đột ngột, chưa cài đặt các phép toán chức năng của Cache Server .
+
+EN: Current problem: Handling sudden TCP connection interruptions; the functional operations of the Cache Server have not yet been implemented.
