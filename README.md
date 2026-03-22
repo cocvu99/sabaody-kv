@@ -106,6 +106,4 @@ go run cmd/main.go
 - [ ] **Monitoring**: Real-time statistics via the `INFO` command.
 
 ## Current Problems
-VN: Vấn đề hiện tại: Bài toán xử lý TCP connection đứt gãy đột ngột, chưa cài đặt các phép toán chức năng của Cache Server .
-
 EN: Current problem: Handling sudden TCP connection interruptions; the functional operations of the Cache Server have not yet been implemented.
